@@ -7,23 +7,15 @@ namespace modbus_controller {
 
 static const char *const TAG = "modbus_controller";
 
-typedef union {
- 
-    float f;
-    struct
-    {
- 
-        // Order is important.
-        // Here the members of the union data structure
-        // use the same memory (32 bits).
-        // The ordering is taken
-        // from the LSB to the MSB.
-        unsigned int mantissa : 23;
-        unsigned int exponent : 8;
-        unsigned int sign : 1;
- 
-    } raw;
-} IEEE754float;
+uint32_t ModbusController::pack754_32 ( float f )
+{
+  UFloatingPointIEEE754 ieee754;
+  uint32_t    floatingToIntValue = 0;
+  ieee754.f = f;
+  floatingToIntValue = (((NTH_BIT(ieee754.raw.sign, 0) << 8) |
+  (BYTE_TO_BIN(ieee754.raw.exponent)))  << 23 ) | MANTISSA_TO_BIN(ieee754.raw.mantissa);
+  return floatingToIntValue;
+}
 
 void ModbusController::setup() { this->create_register_ranges_(); }
 
@@ -574,11 +566,10 @@ void number_to_payload(std::vector<uint16_t> &data, int64_t value, SensorValueTy
          data.push_back((value & 0xFFFF0000) >> 16);
          data.push_back(value & 0xFFFF);
       #else
-         IEEE754float var;
-         var.f = value;
+         uint32_t var = pack754_32(value);
          ESP_LOGD(
           TAG,
-          "Value: ",var.raw);
+          "Value: ",var);
          data.push_back(0x3f80);
          data.push_back(0x0000);
          //data.push_back((var.raw & 0xFFFF0000) >> 16);
