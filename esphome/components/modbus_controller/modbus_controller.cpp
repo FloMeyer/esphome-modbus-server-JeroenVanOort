@@ -579,9 +579,10 @@ void number_to_payload(std::vector<uint16_t> &data, int64_t value, SensorValueTy
          ESP_LOGD(
           TAG,
           "Value: ",var.raw);
-         // data.push_back(0x3f80);
-         data.push_back((var.raw & 0xFFFF0000) >> 16);
-         data.push_back(var.raw & 0xFFFF);
+         data.push_back(0x3f80);
+         data.push_back(0x0000);
+         //data.push_back((var.raw & 0xFFFF0000) >> 16);
+         //data.push_back(var.raw & 0xFFFF);
       #endif
       //data.push_back((value & 0xFFFF0000) >> 16);
       //data.push_back(value & 0xFFFF);
