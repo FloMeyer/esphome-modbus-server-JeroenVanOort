@@ -561,11 +561,6 @@ void number_to_payload(std::vector<uint16_t> &data, int64_t value, SensorValueTy
              float f;
          } u;
          u.f = value;
-         u.c[3] = 0x43;
-         u.c[2] = 0x70;
-         u.c[1] = 0x80;
-         u.c[0] = 0x00;
-         uint32_t var = pack754_32(value);
          ESP_LOGD(
           TAG,
           "Value: 0x%02X 0x%02X 0x%02X 0x%02X", (uint16_t)u.c[0], (uint16_t)u.c[1], (uint16_t)u.c[2], (uint16_t)u.c[3]);
