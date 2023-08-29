@@ -551,11 +551,9 @@ void number_to_payload(std::vector<uint16_t> &data, int64_t value, SensorValueTy
     case SensorValueType::U_DWORD:
     case SensorValueType::S_DWORD:
     case SensorValueType::FP32:
-      // 
-      // data.push_back((value & 0xFFFF0000) >> 16);
-      // data.push_back(value & 0xFFFF);
-      data.push_back(0x43c8);
-      data.push_back(0x0000);
+      // IEC
+      data.push_back((value & 0xFFFF0000) >> 16);
+      data.push_back(value & 0xFFFF);
       break;
     case SensorValueType::U_DWORD_R:
     case SensorValueType::S_DWORD_R:
