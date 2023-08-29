@@ -559,17 +559,16 @@ void number_to_payload(std::vector<uint16_t> &data, int64_t value, SensorValueTy
          union {
              char c[4];
              float f;
+             uint16_t w[2];
          } u;
          u.f = value;
          ESP_LOGD(
           TAG,
-          "Value: 0x%02X 0x%02X 0x%02X 0x%02X", (uint16_t)u.c[3], (uint16_t)u.c[2], (uint16_t)u.c[1], (uint16_t)u.c[0]);
+          "Value: 0x%02X 0x%02X", (uint16_t)u.w[1], (uint16_t)u.w[0],);
          // data.push_back(0x3f80);
          // data.push_back(0x0000);
-         data.push_back(u.c[3]);
-         data.push_back(u.c[2]);
-         data.push_back(u.c[1]);
-         data.push_back(u.c[0]);
+         data.push_back(u.w[0]);
+         data.push_back(u.w[1]);
       #endif
       //data.push_back((value & 0xFFFF0000) >> 16);
       //data.push_back(value & 0xFFFF);
