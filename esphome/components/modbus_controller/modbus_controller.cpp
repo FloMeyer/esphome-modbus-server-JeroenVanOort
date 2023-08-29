@@ -551,6 +551,7 @@ void number_to_payload(std::vector<uint16_t> &data, int64_t value, SensorValueTy
     case SensorValueType::U_DWORD:
     case SensorValueType::S_DWORD:
     case SensorValueType::FP32:
+      print(std::numeric_limits<float>::is_iec559);
       data.push_back((value & 0xFFFF0000) >> 16);
       data.push_back(value & 0xFFFF);
       break;
