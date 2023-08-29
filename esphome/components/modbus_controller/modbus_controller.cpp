@@ -556,8 +556,8 @@ void number_to_payload(std::vector<uint16_t> &data, int64_t value, SensorValueTy
          data.push_back((value & 0xFFFF0000) >> 16);
          data.push_back(value & 0xFFFF);
       #else
-         data.push_back(0x4120);
-         data.push_back(0x0000F);
+         data.push_back(0x3f80);
+         data.push_back(0x0000);
       #endif
       //data.push_back((value & 0xFFFF0000) >> 16);
       //data.push_back(value & 0xFFFF);
