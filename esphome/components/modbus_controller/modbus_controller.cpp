@@ -551,10 +551,12 @@ void number_to_payload(std::vector<uint16_t> &data, int64_t value, SensorValueTy
     case SensorValueType::U_DWORD:
     case SensorValueType::S_DWORD:
     case SensorValueType::FP32:
+      #ifndef __STDC_IEC_559__
+      #error The following Programm only supports float operations using the IEEE 754 Standard
       ESP_LOGD(
           TAG,
-          "IEEE: ",
-          std::numeric_limits<float>::is_iec559);
+          "IEC559 not defined");
+      #endif
       data.push_back((value & 0xFFFF0000) >> 16);
       data.push_back(value & 0xFFFF);
       break;
