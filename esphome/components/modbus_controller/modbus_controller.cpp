@@ -7,16 +7,6 @@ namespace modbus_controller {
 
 static const char *const TAG = "modbus_controller";
 
-uint32_t ModbusController::pack754_32 ( float f )
-{
-  UFloatingPointIEEE754 ieee754;
-  uint32_t    floatingToIntValue = 0;
-  ieee754.f = f;
-  floatingToIntValue = (((NTH_BIT(ieee754.raw.sign, 0) << 8) |
-  (BYTE_TO_BIN(ieee754.raw.exponent)))  << 23 ) | MANTISSA_TO_BIN(ieee754.raw.mantissa);
-  return floatingToIntValue;
-}
-
 void ModbusController::setup() { this->create_register_ranges_(); }
 
 /*
@@ -566,10 +556,19 @@ void number_to_payload(std::vector<uint16_t> &data, int64_t value, SensorValueTy
          data.push_back((value & 0xFFFF0000) >> 16);
          data.push_back(value & 0xFFFF);
       #else
+         union {
+             char c[4];
+             float f;
+         } u;
+         u.f = value;
+         u.c[3] = 0x43;
+         u.c[2] = 0x70;
+         u.c[1] = 0x80;
+         u.c[0] = 0x00;
          uint32_t var = pack754_32(value);
          ESP_LOGD(
           TAG,
-          "Value: ",var);
+          "Value: 0x%02X", (uint16_t)u.c[0], (uint16_t)u.c[1], (uint16_t)u.c[2], (uint16_t)u.c[3]);
          data.push_back(0x3f80);
          data.push_back(0x0000);
          //data.push_back((var.raw & 0xFFFF0000) >> 16);
