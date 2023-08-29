@@ -576,6 +576,9 @@ void number_to_payload(std::vector<uint16_t> &data, int64_t value, SensorValueTy
       #else
          IEEE754float var;
          var.f = value;
+         ESP_LOGD(
+          TAG,
+          "Value: ",var.raw);
          // data.push_back(0x3f80);
          data.push_back((var.raw & 0xFFFF0000) >> 16);
          data.push_back(var.raw & 0xFFFF);
