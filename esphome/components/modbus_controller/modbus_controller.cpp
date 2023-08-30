@@ -551,7 +551,6 @@ void number_to_payload(std::vector<uint16_t> &data, int64_t value, SensorValueTy
     case SensorValueType::U_DWORD:
     case SensorValueType::S_DWORD:
     case SensorValueType::FP32:
-      // IEC
       #ifdef __STDC_IEC_559__
          data.push_back((value & 0xFFFF0000) >> 16);
          data.push_back(value & 0xFFFF);
@@ -569,8 +568,20 @@ void number_to_payload(std::vector<uint16_t> &data, int64_t value, SensorValueTy
     case SensorValueType::U_DWORD_R:
     case SensorValueType::S_DWORD_R:
     case SensorValueType::FP32_R:
-      data.push_back(value & 0xFFFF);
-      data.push_back((value & 0xFFFF0000) >> 16);
+      #ifdef __STDC_IEC_559__
+         data.push_back(value & 0xFFFF);
+         data.push_back((value & 0xFFFF0000) >> 16);
+      #else
+         union {
+             float f;
+             uint16_t w[2];
+         } u;
+         u.f = value;
+         // ESP_LOGD(TAG, "Value: 0x%02X 0x%02X", (uint16_t)u.w[0], (uint16_t)u.w[1]);
+         data.push_back(u.w[0]);
+         data.push_back(u.w[1]);
+      #endif
+      
       break;
     case SensorValueType::U_QWORD:
     case SensorValueType::S_QWORD:
